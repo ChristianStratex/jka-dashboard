@@ -94,6 +94,14 @@
     { "c": "Call", "v": 8 },
     { "c": "Email", "v": 3 }
   ],
+  "reactivationSegments": [
+    { "label": "Ready for funding (hot)", "v": 3, "detail": "Funding Pipeline, final stage — one push from closing.", "sev": "high" },
+    { "label": "Waiting to be funded", "v": 39, "detail": "Funding Pipeline: 9 contract sent · 3 signed · 13 awaiting signature · 3 ready.", "sev": "high" },
+    { "label": "Unread Instagram DMs", "v": 446, "detail": "ManyChat backlog — freshest top-of-funnel leads going cold.", "sev": "high" },
+    { "label": "Credit-repair leads", "v": 59, "detail": "Credit Repair Pipeline — all still 'New Lead', none worked yet.", "sev": "med" },
+    { "label": "New sales leads", "v": 138, "detail": "Sales Pipeline — 136 unworked new leads.", "sev": "med" },
+    { "label": "Dormant / unclassified", "v": 27449, "detail": "88% of the base with no lifecycle stage — the biggest re-engagement pool.", "sev": "low" }
+  ],
   "calls": { "total": 20, "answeredPct": 75, "missedPct": 25, "avgSec": 14, "firstTime": 3, "window": "Jul 3–9" },
   "appointments": { "booked": 11, "confirmed": 11, "rescheduled": 2, "cancelled": 0, "showed": 0, "noShow": 0, "window": "Jun 9 – Jul 9" },
   "email": { "deliveredPct": 100, "openPct": 41, "clickPct": 1, "orderedPct": 0, "sent": 460, "window": "Jul 3–9" },
