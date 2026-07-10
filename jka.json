@@ -1,0 +1,166 @@
+{
+  "business": {
+    "name": "JKA Consulting LLC",
+    "location": "Columbus, Ohio",
+    "owner": "Adreain Brown",
+    "handle": "@amob_gocrazy",
+    "website": "jka-consulting.com",
+    "phone": "(614) 368-8080",
+    "ghlLocationId": "v5thvzGNMNchcQeQQuLI"
+  },
+  "updated": "2026-07-09",
+  "dataSources": [
+    { "name": "GoHighLevel", "status": "connected", "detail": "CRM · Payments · Convos" },
+    { "name": "Instagram", "status": "connected", "detail": "@amob_gocrazy" },
+    { "name": "PAB Gateway", "status": "connected", "detail": "High-ticket payments" },
+    { "name": "Stripe", "status": "connected", "detail": "Summit / low-ticket" },
+    { "name": "ManyChat", "status": "connected", "detail": "IG DM automation" }
+  ],
+  "revenue": {
+    "lastMonth": 75670,
+    "lastMonthLabel": "June 2026",
+    "monthToDate": 7280,
+    "monthToDateLabel": "July 2026 (MTD)",
+    "lifetimeCollected": 121060,
+    "invoicesReceivedCount": 60,
+    "invoicesOverdue": 133280,
+    "invoicesOverdueCount": 54,
+    "invoicesDraft": 8884.63,
+    "invoicesDue": 3497,
+    "changeVsPrev": 14.1,
+    "monthlySeries": [
+      { "m": "Aug '25", "v": 28400, "verified": false },
+      { "m": "Sep '25", "v": 33100, "verified": false },
+      { "m": "Oct '25", "v": 38900, "verified": false },
+      { "m": "Nov '25", "v": 44600, "verified": false },
+      { "m": "Dec '25", "v": 47200, "verified": false },
+      { "m": "Jan '26", "v": 51500, "verified": false },
+      { "m": "Feb '26", "v": 41200, "verified": false },
+      { "m": "Mar '26", "v": 53800, "verified": false },
+      { "m": "Apr '26", "v": 62400, "verified": false },
+      { "m": "May '26", "v": 68900, "verified": false },
+      { "m": "Jun '26", "v": 75670, "verified": true },
+      { "m": "Jul '26", "v": 7280, "verified": true }
+    ]
+  },
+  "clients": {
+    "total": 31254,
+    "newThisMonth": 205,
+    "leadsWeek": 128,
+    "leadsToday": 18,
+    "leads30d": 977,
+    "avgPayment": 2100,
+    "ltv": 235
+  },
+  "clientBase": [
+    { "label": "Active", "v": 3546, "color": "#4a7c59" },
+    { "label": "New (30d)", "v": 205, "color": "#6ea8fe" },
+    { "label": "Overdue", "v": 54, "color": "#e08a3c" },
+    { "label": "Unclassified", "v": 27449, "color": "#c9c2b6" }
+  ],
+  "sources": [
+    { "label": "Social media", "v": 131 },
+    { "label": "Direct traffic", "v": 71 },
+    { "label": "Organic search", "v": 2 },
+    { "label": "Trigger link", "v": 1 }
+  ],
+  "messagesByChannel": {
+    "totalUnread": 2600,
+    "windowedUnread": 486,
+    "channels": [
+      { "c": "Instagram DM", "v": 446, "color": "#c98a3c" },
+      { "c": "SMS", "v": 26, "color": "#6ea8fe" },
+      { "c": "Call", "v": 8, "color": "#4a7c59" },
+      { "c": "Email", "v": 3, "color": "#d98a34" },
+      { "c": "Facebook DM", "v": 0, "color": "#9b8cff" },
+      { "c": "Voicemail", "v": 0, "color": "#c9c2b6" }
+    ],
+    "slaTracking": false
+  },
+  "conversations": [
+    { "c": "Instagram", "v": 446 },
+    { "c": "SMS", "v": 26 },
+    { "c": "Call", "v": 8 },
+    { "c": "Email", "v": 3 }
+  ],
+  "calls": { "total": 20, "answeredPct": 75, "missedPct": 25, "avgSec": 14, "firstTime": 3, "window": "Jul 3–9" },
+  "appointments": { "booked": 11, "confirmed": 11, "rescheduled": 2, "cancelled": 0, "showed": 0, "noShow": 0, "window": "Jun 9 – Jul 9" },
+  "email": { "deliveredPct": 100, "openPct": 41, "clickPct": 1, "orderedPct": 0, "sent": 460, "window": "Jul 3–9" },
+  "attribution": { "leads": 977, "oppsWon": 1, "revenueClosed": 3500, "window": "Jun 9 – Jul 9", "model": "first-touch" },
+  "ads": { "spend": 0, "impressions": 0, "clicks": 0, "note": "No paid ads — 100% organic (Instagram/ManyChat)" },
+  "reputation": { "reviews": 0, "note": "Reputation module not set up — 0 reviews tracked" },
+  "pipelinesSummary": {
+    "total": 45,
+    "active": [
+      { "name": "Sales Pipeline", "opps": 138, "note": "136 New Leads · 2 No Show" },
+      { "name": "Funding Pipeline", "opps": 39, "note": "9 Contract · 3 Signed · 13 Waiting Sig · 3 Ready" }
+    ],
+    "examples": ["5 Day 250k Play Business Funding Challenge", "Webinar: Get Up to $250K in 30 Days", "$50K Funding Bundle", "1% Tour", "Rich Off Credit Miami 2025", "Credit Repair Pipeline", "Funding Pipeline Podcast Summit"]
+  },
+  "pipeline": [
+    { "s": "Captured & Contract Sent", "n": 9, "v": 3075 },
+    { "s": "Signed", "n": 3, "v": 3075 },
+    { "s": "Form Complete – waiting Signature", "n": 13, "v": 0 },
+    { "s": "Ready for Funding", "n": 3, "v": 4400 }
+  ],
+  "packages": [
+    { "name": "Strategic Execution Fee", "price": 2625, "share": 64 },
+    { "name": "Strategic Execution — Premium", "price": 3750, "share": 20 },
+    { "name": "ROC Business Partnership", "price": 2750, "share": 8 },
+    { "name": "Quarter Million Club Mentorship", "price": 2575, "share": 6 },
+    { "name": "Four for Four (ebook funnel)", "price": 4, "share": 2 }
+  ],
+  "subscriptions": {
+    "note": "Recurring products exist but most subscriptions are Incomplete/Expired — minimal active MRR.",
+    "products": ["ROC Business Partnership $2,750", "Entrepreneur's Summit $9.99/mo", "Quarter Million Club $2,575", "Four for Four $100"],
+    "gateways": ["PAB Gateway", "Stripe"]
+  },
+  "opsDepth": {
+    "workflows": { "count": 6, "needsReview": 1, "examples": ["Credit Repair eBook Funnel", "Credit Repair Consultation", "Business Funding eBook Funnel", "Business Funding Consultation", "Appointment Confirmation + Reminders"] },
+    "tasks": { "total": 2, "overdue": 2, "note": "Both stale (2022); team runs on automation, not manual tasks" },
+    "funnels": { "groups": 53, "note": "Business Structuring 86 sub-funnels · BM Funnels 21" },
+    "forms": { "count": 61, "topFormSubmissions": 61, "topFormName": "Podcast Summit Event" }
+  },
+  "social": {
+    "followers": 66600,
+    "posts": 899,
+    "following": 4263,
+    "growthSeries": [63100, 63900, 64600, 65200, 65900, 66600]
+  },
+  "postPerformance": {
+    "avgLikes": 150,
+    "avgComments": 17,
+    "engagementRatePct": 0.22,
+    "topPost": { "title": "AMOB Will Fund $3.5M at Podcast Summit", "likes": 2752, "comments": 350, "engPct": 4.1 },
+    "samples": [
+      { "label": "Latest reel", "likes": 134, "comments": 11 },
+      { "label": "Client testimonial", "likes": 164, "comments": 19 },
+      { "label": "Summit walk-through", "likes": 147, "comments": 20 },
+      { "label": "Podcast Summit promo (top)", "likes": 2752, "comments": 350 }
+    ]
+  },
+  "marketing": {
+    "funded": "$84M+",
+    "clients": "1,500+",
+    "success": "95%"
+  },
+  "_activityNote": "Anonymized snapshot — real client identities flow in live via the GHL API at runtime, never committed to the repo.",
+  "activity": [
+    { "who": "Client J.R.", "what": "Strategic Execution Fee", "amt": 3750, "when": "Jul 9", "status": "Pending" },
+    { "who": "Client J.M.", "what": "Four for Four Funnel", "amt": 4, "when": "Jul 9", "status": "Pending" },
+    { "who": "Client M.A.", "what": "Strategic Execution Fee", "amt": 2625, "when": "Jul 5", "status": "Succeeded" },
+    { "who": "Client M.N.", "what": "Strategic Execution Fee", "amt": 2625, "when": "Jul 5", "status": "Pending" },
+    { "who": "Client S.M.", "what": "Strategic Execution Fee", "amt": 2625, "when": "Jul 3", "status": "Succeeded" },
+    { "who": "Client G.C.", "what": "One-Time Invoice", "amt": 500, "when": "Jun 24", "status": "Paid" },
+    { "who": "Client K.B.", "what": "Text2Pay Invoice", "amt": 1000, "when": "Jun 25", "status": "Paid" },
+    { "who": "Client R.W.", "what": "Text2Pay Invoice", "amt": 2000, "when": "Jun 5", "status": "Paid" }
+  ],
+  "needsAttention": [
+    { "title": "54 invoices overdue — $133.28K", "detail": "Largest recovery lever. Trigger reminder sequence + dispute follow-up.", "sev": "high" },
+    { "title": "2.6K unread conversations (446 IG DMs)", "detail": "ManyChat handoff backlog; top-of-funnel leads waiting on a reply.", "sev": "high" },
+    { "title": "13 opportunities stuck at 'waiting Signature'", "detail": "$0 booked — a signature nudge converts to Ready for Funding.", "sev": "med" },
+    { "title": "27,449 contacts unclassified", "detail": "No lifecycle stage/tag — 88% of the list is a segmentation blind spot.", "sev": "med" },
+    { "title": "0 reviews collected", "detail": "1,500+ clients and no reputation engine — untapped social proof.", "sev": "med" },
+    { "title": "Email click-rate 1%", "detail": "41% open but 1% click — CTAs/offers in email underperform.", "sev": "low" }
+  ]
+}
