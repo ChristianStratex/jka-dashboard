@@ -160,7 +160,7 @@
           <canvas id="revChart" height="112"></canvas>
         </div>
         <div class="rail">
-          <div class="kpi"><span class="l">Lifetime collected</span><span class="v" id="k-life">—</span></div>
+          <div class="kpi"><span class="l">Invoiced to date</span><span class="v" id="k-life">—</span></div>
           <div class="kpi"><span class="l">Invoices overdue</span><span class="v" id="k-over">—</span></div>
           <div class="kpi"><span class="l">Leads (30d)</span><span class="v" id="k-leads">—</span></div>
           <div class="kpi"><span class="l">IG followers</span><span class="v" id="k-ig">—</span></div>
@@ -256,7 +256,7 @@
     <section class="view" id="v-payments">
       <div class="sec-label">Payments</div>
       <div class="row3">
-        <div class="kpi"><span class="l">Lifetime collected</span><span class="v" id="k-life2">—</span></div>
+        <div class="kpi"><span class="l">Invoiced to date</span><span class="v" id="k-life2">—</span></div>
         <div class="kpi"><span class="l">Invoices received</span><span class="v" id="k-recv">—</span></div>
         <div class="kpi"><span class="l">Invoices overdue</span><span class="v" id="k-over2">—</span></div>
       </div>
@@ -373,10 +373,12 @@
   "revenue": {
     "lastMonth": 75670,
     "lastMonthLabel": "June 2026",
-    "monthToDate": 7280,
+    "monthToDate": 12280,
     "monthToDateLabel": "July 2026 (MTD)",
+    "juneTransactions": 109,
     "lifetimeCollected": 121060,
-    "lifetimeNote": "invoiced to date · full collected pending live sync",
+    "lifetimeNote": "invoiced to date (60)",
+    "lifetimeLabel": "Invoiced",
     "invoicesReceived": 121060,
     "invoicesReceivedCount": 60,
     "invoicesOverdue": 133280,
@@ -396,7 +398,7 @@
       { "m": "Apr '26", "v": 62400, "verified": false },
       { "m": "May '26", "v": 68900, "verified": false },
       { "m": "Jun '26", "v": 75670, "verified": true },
-      { "m": "Jul '26", "v": 7280, "verified": true }
+      { "m": "Jul '26", "v": 12280, "verified": true }
     ]
   },
   "clients": {
@@ -420,6 +422,13 @@
     { "label": "Organic search", "v": 2 },
     { "label": "Trigger link", "v": 1 }
   ],
+  "contactTags": [
+    { "label": "Instagram DM / ManyChat", "v": 131 },
+    { "label": "Direct traffic", "v": 71 },
+    { "label": "Organic search", "v": 2 },
+    { "label": "Trigger link / other", "v": 1 }
+  ],
+  "contactTagsNote": "New-contact sources tracked in July (205). All-time, Instagram is the dominant driver — 632 of 636 conversations this year originate on Instagram via ManyChat. Most common tags on the 31,254-contact base: funding-manychat, website lead.",
   "messagesByChannel": {
     "totalUnread": 2600,
     "windowedUnread": 486,
@@ -560,7 +569,7 @@ function render(d){
   const M=[
     ["Collected · Jun", fmtK(r.lastMonth), "▲"+r.changeVsPrev+"%"],
     ["MTD · Jul", fmtK(r.monthToDate), ""],
-    ["Lifetime", fmtK(life), r.lifetimeNote||""],
+    [r.lifetimeLabel||"Invoiced", fmtK(life), r.lifetimeNote||""],
     ["Overdue", fmtK(r.invoicesOverdue), r.invoicesOverdueCount+" invoices"],
     ["Leads (30d)", num(d.clients.leads30d), d.clients.leadsWeek+"/wk"],
     ["Contacts", kk(d.clients.total), "+"+d.clients.newThisMonth+" mo"],
