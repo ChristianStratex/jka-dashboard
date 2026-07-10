@@ -22,6 +22,8 @@
     "monthToDate": 7280,
     "monthToDateLabel": "July 2026 (MTD)",
     "lifetimeCollected": 121060,
+    "lifetimeNote": "invoiced to date · full collected pending live sync",
+    "invoicesReceived": 121060,
     "invoicesReceivedCount": 60,
     "invoicesOverdue": 133280,
     "invoicesOverdueCount": 54,

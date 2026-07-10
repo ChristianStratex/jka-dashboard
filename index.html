@@ -22,7 +22,7 @@
   .brand b{color:#fff;font-size:14px;display:block;line-height:1.2}
   .brand span{font-size:11px;color:#6b7787}
   .nav{list-style:none;padding:0;margin:6px 0 0}
-  .nav li{display:flex;align-items:center;gap:11px;padding:9px 10px;border-radius:8px;font-size:13.5px;cursor:pointer;color:var(--sidebar-text)}
+  .nav li{display:flex;align-items:center;gap:11px;padding:9px 10px;border-radius:8px;font-size:13.5px;cursor:pointer;color:var(--sidebar-text);user-select:none}
   .nav li .ic{width:16px;text-align:center;opacity:.8}
   .nav li.active{background:var(--sidebar-2);color:#fff}
   .nav li:hover:not(.active){background:#191f28}
@@ -38,6 +38,7 @@
   .chip{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:6px 13px;font-size:12.5px;color:var(--muted);cursor:pointer}
   .chip.active{background:var(--ink);color:#fff;border-color:var(--ink)}
   .sec-label{font-size:12px;color:var(--muted);font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin:26px 2px 2px}
+  .sec-label:first-of-type{margin-top:16px}
   .metrics{display:grid;grid-template-columns:repeat(8,1fr);gap:12px;margin-top:12px}
   .metric{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 13px;box-shadow:var(--shadow)}
   .metric .l{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.3px;line-height:1.3}
@@ -98,6 +99,9 @@
   .note{font-size:12px;color:var(--muted);line-height:1.5;margin-top:8px}
   .tag{display:inline-block;background:#efe7d7;color:#6b5a3a;border-radius:6px;padding:2px 8px;font-size:11px;margin:3px 4px 0 0}
   .foot{color:var(--muted);font-size:11px;margin-top:24px;line-height:1.6}
+  .view{display:none}
+  .view.active{display:block}
+  .verify{font-size:11px;color:var(--warn);background:rgba(217,138,52,.1);border-radius:6px;padding:2px 8px;display:inline-block;margin-left:6px}
   @media(max-width:1150px){.metrics{grid-template-columns:repeat(4,1fr)}}
   @media(max-width:1050px){.grid,.row3,.row2{grid-template-columns:1fr}.sidebar{display:none}}
 </style>
@@ -109,15 +113,15 @@
       <div class="logo">J</div>
       <div><b id="b-name">JKA Consulting</b><span id="b-loc">Columbus, Ohio</span></div>
     </div>
-    <ul class="nav">
-      <li class="active"><span class="ic">▦</span> Dashboard</li>
-      <li><span class="ic">◷</span> Reactivation <span class="badge" id="nav-dm">446</span></li>
-      <li><span class="ic">◎</span> Pipelines</li>
-      <li><span class="ic">✉</span> Conversations</li>
-      <li><span class="ic">$</span> Payments</li>
-      <li><span class="ic">◔</span> Clients</li>
-      <li><span class="ic">✦</span> Social</li>
-      <li><span class="ic">⚙</span> Settings</li>
+    <ul class="nav" id="nav">
+      <li class="active" data-view="dashboard"><span class="ic">▦</span> Dashboard</li>
+      <li data-view="reactivation"><span class="ic">◷</span> Reactivation <span class="badge" id="nav-dm">446</span></li>
+      <li data-view="pipelines"><span class="ic">◎</span> Pipelines</li>
+      <li data-view="conversations"><span class="ic">✉</span> Conversations</li>
+      <li data-view="payments"><span class="ic">$</span> Payments</li>
+      <li data-view="clients"><span class="ic">◔</span> Clients</li>
+      <li data-view="social"><span class="ic">✦</span> Social</li>
+      <li data-view="settings"><span class="ic">⚙</span> Settings</li>
     </ul>
     <div class="srcs" id="srcs"></div>
   </aside>
@@ -125,7 +129,7 @@
   <main class="main">
     <div class="top">
       <div>
-        <h1>Executive Dashboard</h1>
+        <h1 id="view-title">Executive Dashboard</h1>
         <div class="sub" id="subline">Loading…</div>
       </div>
       <div class="chips">
@@ -136,163 +140,213 @@
       </div>
     </div>
 
-    <div class="metrics" id="metrics"></div>
-
-    <div class="grid">
-      <div class="card">
-        <div class="heroflex">
-          <div>
-            <h3>Collected — <span id="hero-label"></span></h3>
-            <div class="hero-num" id="hero-num">—</div>
-            <span class="delta" id="hero-delta"></span>
+    <!-- DASHBOARD -->
+    <section class="view active" id="v-dashboard">
+      <div class="metrics" id="metrics"></div>
+      <div class="grid">
+        <div class="card">
+          <div class="heroflex">
+            <div>
+              <h3>Collected — <span id="hero-label"></span></h3>
+              <div class="hero-num" id="hero-num">—</div>
+              <span class="delta" id="hero-delta"></span>
+            </div>
+            <div style="text-align:right">
+              <h3>Month to date</h3>
+              <div style="font-size:24px;font-weight:800" id="mtd">—</div>
+              <span style="font-size:11.5px;color:var(--muted)" id="mtd-label"></span>
+            </div>
           </div>
-          <div style="text-align:right">
-            <h3>Month to date</h3>
-            <div style="font-size:24px;font-weight:800" id="mtd">—</div>
-            <span style="font-size:11.5px;color:var(--muted)" id="mtd-label"></span>
+          <canvas id="revChart" height="112"></canvas>
+        </div>
+        <div class="rail">
+          <div class="kpi"><span class="l">Lifetime collected</span><span class="v" id="k-life">—</span></div>
+          <div class="kpi"><span class="l">Invoices overdue</span><span class="v" id="k-over">—</span></div>
+          <div class="kpi"><span class="l">Leads (30d)</span><span class="v" id="k-leads">—</span></div>
+          <div class="kpi"><span class="l">IG followers</span><span class="v" id="k-ig">—</span></div>
+          <div class="kpi"><span class="l">Total contacts</span><span class="v" id="k-total">—</span></div>
+        </div>
+      </div>
+      <div class="sec-label">Needs attention</div>
+      <div class="row2" style="grid-template-columns:1fr"><div class="card"><div class="att" id="att"></div></div></div>
+    </section>
+
+    <!-- REACTIVATION -->
+    <section class="view" id="v-reactivation">
+      <div class="sec-label">Unread &amp; re-engagement</div>
+      <div class="row2" style="grid-template-columns:1.4fr 1fr">
+        <div class="card">
+          <h3>Messages by channel — <span id="msg-total"></span> unread</h3>
+          <div class="chan" id="chan"></div>
+          <div class="note" id="msg-note"></div>
+        </div>
+        <div class="card">
+          <h3>Reactivation opportunity</h3>
+          <div class="social-row" style="margin-top:10px">
+            <div class="stat"><b id="re-dm">—</b><span>unread IG DMs</span></div>
+            <div class="stat"><b id="re-unclass">—</b><span>unclassified</span></div>
+            <div class="stat"><b id="re-overdue">—</b><span>overdue invoices</span></div>
+          </div>
+          <div class="note">These are the fastest wins: IG DMs are fresh top-of-funnel leads (via ManyChat), and overdue invoices are already-sold clients to recover.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PIPELINES -->
+    <section class="view" id="v-pipelines">
+      <div class="sec-label">Pipeline &amp; revenue</div>
+      <div class="row2">
+        <div class="card">
+          <h3>Funding pipeline — 39 open opportunities</h3>
+          <div class="pl" id="pipeline"></div>
+        </div>
+        <div class="card">
+          <h3>Revenue by package</h3>
+          <canvas id="pkgChart" height="160"></canvas>
+        </div>
+      </div>
+      <div class="row2" style="grid-template-columns:1fr">
+        <div class="card">
+          <h3>All pipelines — <span id="pl-total"></span> total</h3>
+          <div id="pl-active" style="margin-top:8px"></div>
+          <div class="note">Event &amp; challenge funnels: <span id="pl-ex"></span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONVERSATIONS -->
+    <section class="view" id="v-conversations">
+      <div class="sec-label">Conversations &amp; comms</div>
+      <div class="row2" style="grid-template-columns:1fr 1.2fr">
+        <div class="card">
+          <h3>Conversation mix</h3>
+          <canvas id="convChart" height="200"></canvas>
+        </div>
+        <div class="card">
+          <h3>Comms operations</h3>
+          <div style="margin-top:10px"><b style="font-size:12px;color:var(--muted)">APPOINTMENTS <span id="appt-win"></span></b>
+            <div class="social-row" style="margin:8px 0 14px">
+              <div class="stat"><b id="ap-booked">—</b><span>booked</span></div>
+              <div class="stat"><b id="ap-conf">—</b><span>confirmed</span></div>
+              <div class="stat"><b id="ap-resc">—</b><span>rescheduled</span></div>
+              <div class="stat"><b id="ap-ns">—</b><span>no-show</span></div>
+            </div>
+          </div>
+          <div><b style="font-size:12px;color:var(--muted)">INBOUND CALLS <span id="call-win"></span></b>
+            <div class="social-row" style="margin:8px 0 14px">
+              <div class="stat"><b id="cl-total">—</b><span>calls</span></div>
+              <div class="stat"><b id="cl-ans">—</b><span>answered</span></div>
+              <div class="stat"><b id="cl-miss">—</b><span>missed</span></div>
+              <div class="stat"><b id="cl-avg">—</b><span>avg len</span></div>
+            </div>
+          </div>
+          <div><b style="font-size:12px;color:var(--muted)">EMAIL <span id="em-win"></span></b>
+            <div class="social-row" style="margin:8px 0 2px">
+              <div class="stat"><b id="em-del">—</b><span>delivered</span></div>
+              <div class="stat"><b id="em-open">—</b><span>open rate</span></div>
+              <div class="stat"><b id="em-click">—</b><span>click rate</span></div>
+              <div class="stat"><b id="em-sent">—</b><span>sent</span></div>
+            </div>
           </div>
         </div>
-        <canvas id="revChart" height="112"></canvas>
       </div>
-      <div class="rail">
-        <div class="kpi"><span class="l">Lifetime collected</span><span class="v" id="k-life">—</span></div>
-        <div class="kpi"><span class="l">Invoices overdue</span><span class="v" id="k-over">—</span></div>
-        <div class="kpi"><span class="l">Avg. payment</span><span class="v" id="k-avg">—</span></div>
-        <div class="kpi"><span class="l">Client LTV</span><span class="v" id="k-ltv">—</span></div>
-        <div class="kpi"><span class="l">Total contacts</span><span class="v" id="k-total">—</span></div>
-      </div>
-    </div>
+    </section>
 
-    <div class="sec-label">Audience & channels</div>
-    <div class="row3">
-      <div class="card" style="grid-column:span 2">
-        <h3>Client base — 31,254 contacts</h3>
-        <div class="segbar" id="segbar"></div>
-        <div class="seglegend" id="seglegend"></div>
+    <!-- PAYMENTS -->
+    <section class="view" id="v-payments">
+      <div class="sec-label">Payments</div>
+      <div class="row3">
+        <div class="kpi"><span class="l">Lifetime collected</span><span class="v" id="k-life2">—</span></div>
+        <div class="kpi"><span class="l">Invoices received</span><span class="v" id="k-recv">—</span></div>
+        <div class="kpi"><span class="l">Invoices overdue</span><span class="v" id="k-over2">—</span></div>
       </div>
-      <div class="card">
-        <h3>New contacts by source (30d)</h3>
-        <canvas id="srcChart" height="150"></canvas>
-      </div>
-    </div>
-
-    <div class="row2" style="grid-template-columns:1.4fr 1fr">
-      <div class="card">
-        <h3>Messages by channel — <span id="msg-total"></span> unread</h3>
-        <div class="chan" id="chan"></div>
-        <div class="note" id="msg-note"></div>
-      </div>
-      <div class="card">
-        <h3>Conversation mix</h3>
-        <canvas id="convChart" height="170"></canvas>
-      </div>
-    </div>
-
-    <div class="sec-label">Operations</div>
-    <div class="row3">
-      <div class="card">
-        <h3>Appointments <span style="text-transform:none;color:var(--muted)" id="appt-win"></span></h3>
-        <div class="social-row" style="margin-top:10px">
-          <div class="stat"><b id="ap-booked">—</b><span>booked</span></div>
-          <div class="stat"><b id="ap-conf">—</b><span>confirmed</span></div>
-          <div class="stat"><b id="ap-resc">—</b><span>rescheduled</span></div>
-          <div class="stat"><b id="ap-ns">—</b><span>no-show</span></div>
+      <div class="row2">
+        <div class="card">
+          <h3>Subscriptions / MRR</h3>
+          <div class="note" id="sub-note"></div>
+          <div id="sub-prod" style="margin-top:6px"></div>
+        </div>
+        <div class="card">
+          <h3>Attribution &amp; spend <span style="text-transform:none;color:var(--muted)" id="attr-win"></span></h3>
+          <div class="social-row" style="margin-top:10px">
+            <div class="stat"><b id="at-leads">—</b><span>leads</span></div>
+            <div class="stat"><b id="at-won">—</b><span>opps won</span></div>
+            <div class="stat"><b id="at-ad">$0</b><span>ad spend</span></div>
+          </div>
+          <div class="note" id="at-note"></div>
         </div>
       </div>
-      <div class="card">
-        <h3>Inbound calls <span style="text-transform:none;color:var(--muted)" id="call-win"></span></h3>
-        <div class="social-row" style="margin-top:10px">
-          <div class="stat"><b id="cl-total">—</b><span>calls</span></div>
-          <div class="stat"><b id="cl-ans">—</b><span>answered</span></div>
-          <div class="stat"><b id="cl-miss">—</b><span>missed</span></div>
-          <div class="stat"><b id="cl-avg">—</b><span>avg len</span></div>
-        </div>
+      <div class="row2" style="grid-template-columns:1fr">
+        <div class="card"><h3>Recent activity</h3><div class="feed" id="feed"></div></div>
       </div>
-      <div class="card">
-        <h3>Email marketing <span style="text-transform:none;color:var(--muted)" id="em-win"></span></h3>
-        <div class="social-row" style="margin-top:10px">
-          <div class="stat"><b id="em-del">—</b><span>delivered</span></div>
-          <div class="stat"><b id="em-open">—</b><span>open rate</span></div>
-          <div class="stat"><b id="em-click">—</b><span>click rate</span></div>
-          <div class="stat"><b id="em-sent">—</b><span>sent</span></div>
-        </div>
-      </div>
-    </div>
+    </section>
 
-    <div class="sec-label">Pipeline & revenue</div>
-    <div class="row2">
-      <div class="card">
-        <h3>Funding pipeline — 39 open opportunities</h3>
-        <div class="pl" id="pipeline"></div>
-      </div>
-      <div class="card">
-        <h3>Revenue by package</h3>
-        <canvas id="pkgChart" height="160"></canvas>
-      </div>
-    </div>
-
-    <div class="row3">
-      <div class="card">
-        <h3>Pipelines — <span id="pl-total"></span> total</h3>
-        <div id="pl-active" style="margin-top:8px"></div>
-        <div class="note">Event & challenge funnels: <span id="pl-ex"></span></div>
-      </div>
-      <div class="card">
-        <h3>Subscriptions / MRR</h3>
-        <div class="note" id="sub-note"></div>
-        <div id="sub-prod" style="margin-top:6px"></div>
-      </div>
-      <div class="card">
-        <h3>Attribution & spend <span style="text-transform:none;color:var(--muted)" id="attr-win"></span></h3>
-        <div class="social-row" style="margin-top:10px">
-          <div class="stat"><b id="at-leads">—</b><span>leads</span></div>
-          <div class="stat"><b id="at-won">—</b><span>opps won</span></div>
-          <div class="stat"><b id="at-ad">$0</b><span>ad spend</span></div>
+    <!-- CLIENTS -->
+    <section class="view" id="v-clients">
+      <div class="sec-label">Client base</div>
+      <div class="row3">
+        <div class="card" style="grid-column:span 2">
+          <h3>Lifecycle — <span id="cb-total"></span> contacts</h3>
+          <div class="segbar" id="segbar"></div>
+          <div class="seglegend" id="seglegend"></div>
         </div>
-        <div class="note" id="at-note"></div>
-      </div>
-    </div>
-
-    <div class="sec-label">Automations, funnels & forms</div>
-    <div class="metrics" id="ops-metrics" style="grid-template-columns:repeat(6,1fr)"></div>
-
-    <div class="sec-label">Social — @amob_gocrazy</div>
-    <div class="row2">
-      <div class="card">
-        <h3>Instagram growth</h3>
-        <div class="social-row" style="margin:8px 0 6px">
-          <div class="stat"><b id="ig-foll">—</b><span>followers</span></div>
-          <div class="stat"><b id="ig-posts">—</b><span>posts</span></div>
-          <div class="stat"><b id="ig-following">—</b><span>following</span></div>
-        </div>
-        <canvas id="igChart" height="80"></canvas>
-        <div class="mstrip">
-          <div class="m"><b id="m-funded">—</b><span>funding secured</span></div>
-          <div class="m"><b id="m-clients">—</b><span>clients helped</span></div>
-          <div class="m"><b id="m-success">—</b><span>success rate</span></div>
+        <div class="card">
+          <h3>New contacts by source (30d)</h3>
+          <canvas id="srcChart" height="150"></canvas>
         </div>
       </div>
-      <div class="card">
-        <h3>Post performance</h3>
-        <canvas id="postChart" height="120"></canvas>
-        <div class="toppost">
-          <div class="big" id="tp-likes">—</div>
-          <div><div style="font-weight:700;font-size:13px" id="tp-title">—</div><div class="note" id="tp-sub"></div></div>
+      <div class="row2" style="grid-template-columns:1fr">
+        <div class="card">
+          <h3>Where contacts come from (tags &amp; sources)</h3>
+          <div id="tags" style="margin-top:8px"></div>
+          <div class="note" id="tags-note"></div>
         </div>
       </div>
-    </div>
+    </section>
 
-    <div class="sec-label">Priorities & activity</div>
-    <div class="row2">
-      <div class="card">
-        <h3>Needs attention</h3>
-        <div class="att" id="att"></div>
+    <!-- SOCIAL -->
+    <section class="view" id="v-social">
+      <div class="sec-label">Social — @amob_gocrazy</div>
+      <div class="row2">
+        <div class="card">
+          <h3>Instagram growth</h3>
+          <div class="social-row" style="margin:8px 0 6px">
+            <div class="stat"><b id="ig-foll">—</b><span>followers</span></div>
+            <div class="stat"><b id="ig-posts">—</b><span>posts</span></div>
+            <div class="stat"><b id="ig-following">—</b><span>following</span></div>
+          </div>
+          <canvas id="igChart" height="80"></canvas>
+          <div class="mstrip">
+            <div class="m"><b id="m-funded">—</b><span>funding secured</span></div>
+            <div class="m"><b id="m-clients">—</b><span>clients helped</span></div>
+            <div class="m"><b id="m-success">—</b><span>success rate</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Post performance</h3>
+          <canvas id="postChart" height="120"></canvas>
+          <div class="toppost">
+            <div class="big" id="tp-likes">—</div>
+            <div><div style="font-weight:700;font-size:13px" id="tp-title">—</div><div class="note" id="tp-sub"></div></div>
+          </div>
+        </div>
       </div>
-      <div class="card">
-        <h3>Recent activity</h3>
-        <div class="feed" id="feed"></div>
+    </section>
+
+    <!-- SETTINGS -->
+    <section class="view" id="v-settings">
+      <div class="sec-label">Settings &amp; sources</div>
+      <div class="row2">
+        <div class="card">
+          <h3>Business</h3>
+          <div id="biz" style="font-size:13px;line-height:2;margin-top:6px"></div>
+        </div>
+        <div class="card">
+          <h3>Data sources &amp; provenance</h3>
+          <div id="srcs2" style="margin-top:6px"></div>
+        </div>
       </div>
-    </div>
+    </section>
 
     <div class="foot" id="foot"></div>
   </main>
@@ -322,6 +376,8 @@
     "monthToDate": 7280,
     "monthToDateLabel": "July 2026 (MTD)",
     "lifetimeCollected": 121060,
+    "lifetimeNote": "invoiced to date · full collected pending live sync",
+    "invoicesReceived": 121060,
     "invoicesReceivedCount": 60,
     "invoicesOverdue": 133280,
     "invoicesOverdueCount": 54,
@@ -467,13 +523,27 @@
 const fmt = n => "$" + Math.round(n).toLocaleString();
 const fmtK = n => n>=1000 ? "$"+(n/1000).toFixed(n%1000?1:0)+"K" : "$"+n;
 const kk = n => n>=1000 ? (n/1000).toFixed(n>=10000?0:1)+"K" : n;
-const num = n => n.toLocaleString();
+const num = n => (n||0).toLocaleString();
+const charts = {};
+const viewCharts = { dashboard:["revChart"], conversations:["convChart"], pipelines:["pkgChart"], clients:["srcChart"], social:["igChart","postChart"] };
+const titles = { dashboard:"Executive Dashboard", reactivation:"Reactivation", pipelines:"Pipelines", conversations:"Conversations", payments:"Payments", clients:"Clients", social:"Social", settings:"Settings" };
+
+function switchView(v){
+  document.querySelectorAll(".view").forEach(s=>s.classList.remove("active"));
+  document.getElementById("v-"+v).classList.add("active");
+  document.querySelectorAll("#nav li").forEach(li=>li.classList.toggle("active", li.dataset.view===v));
+  document.getElementById("view-title").textContent = titles[v];
+  (viewCharts[v]||[]).forEach(id=>{ if(charts[id]) charts[id].resize(); });
+}
 
 async function boot(){
   let d;
   try { d = await (await fetch("/api/data")).json(); }
   catch(e){ d = window.__FALLBACK__; }
   render(d);
+  document.getElementById("nav").addEventListener("click", e=>{
+    const li = e.target.closest("li[data-view]"); if(li) switchView(li.dataset.view);
+  });
 }
 
 function render(d){
@@ -481,15 +551,16 @@ function render(d){
   document.getElementById("b-loc").textContent = d.business.location;
   document.getElementById("subline").textContent = d.business.owner + " · " + d.business.handle + " · updated " + d.updated;
   document.getElementById("nav-dm").textContent = d.messagesByChannel.channels[0].v;
-  document.getElementById("srcs").innerHTML =
-    "<div style='color:#6b7787;margin-bottom:6px'>DATA SOURCES</div>" +
+  const srcHtml = "<div style='color:#6b7787;margin-bottom:6px'>DATA SOURCES</div>" +
     d.dataSources.map(s=>`<div class="s"><span class="dot"></span>${s.name}<span style="margin-left:auto;color:#5f6b7a">${s.detail}</span></div>`).join("");
+  document.getElementById("srcs").innerHTML = srcHtml;
 
   const r=d.revenue;
+  const life = r.lifetimeCollected;
   const M=[
     ["Collected · Jun", fmtK(r.lastMonth), "▲"+r.changeVsPrev+"%"],
     ["MTD · Jul", fmtK(r.monthToDate), ""],
-    ["Lifetime", fmtK(r.lifetimeCollected), r.invoicesReceivedCount+" invoices"],
+    ["Lifetime", fmtK(life), r.lifetimeNote||""],
     ["Overdue", fmtK(r.invoicesOverdue), r.invoicesOverdueCount+" invoices"],
     ["Leads (30d)", num(d.clients.leads30d), d.clients.leadsWeek+"/wk"],
     ["Contacts", kk(d.clients.total), "+"+d.clients.newThisMonth+" mo"],
@@ -504,101 +575,105 @@ function render(d){
   document.getElementById("hero-delta").textContent = "▲ "+r.changeVsPrev+"% vs prior period";
   document.getElementById("mtd").textContent = fmt(r.monthToDate);
   document.getElementById("mtd-label").textContent = r.monthToDateLabel;
-  document.getElementById("k-life").textContent = fmt(r.lifetimeCollected);
+  document.getElementById("k-life").textContent = fmt(life);
   document.getElementById("k-over").textContent = fmt(r.invoicesOverdue);
-  document.getElementById("k-avg").textContent = fmt(d.clients.avgPayment);
-  document.getElementById("k-ltv").textContent = fmt(d.clients.ltv);
+  document.getElementById("k-leads").textContent = num(d.clients.leads30d);
+  document.getElementById("k-ig").textContent = kk(d.social.followers);
   document.getElementById("k-total").textContent = num(d.clients.total);
 
-  new Chart(document.getElementById("revChart"),{type:"line",
+  charts.revChart = new Chart(document.getElementById("revChart"),{type:"line",
     data:{labels:r.monthlySeries.map(x=>x.m),datasets:[{data:r.monthlySeries.map(x=>x.v),borderColor:"#c98a3c",
       backgroundColor:c=>{const g=c.chart.ctx.createLinearGradient(0,0,0,140);g.addColorStop(0,"rgba(201,138,60,.28)");g.addColorStop(1,"rgba(201,138,60,0)");return g;},
       fill:true,tension:.4,pointRadius:r.monthlySeries.map(x=>x.verified?4:2),
       pointBackgroundColor:r.monthlySeries.map(x=>x.verified?"#c98a3c":"#d9c9ad"),borderWidth:2.5}]},
     options:{plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>fmtK(v)},grid:{color:"#eee5d6"}},x:{grid:{display:false}}}}});
 
-  const cb=d.clientBase, tot=cb.reduce((a,b)=>a+b.v,0);
-  document.getElementById("segbar").innerHTML = cb.map(s=>`<div style="width:${(s.v/tot*100).toFixed(2)}%;background:${s.color}">${s.v/tot>0.06?num(s.v):""}</div>`).join("");
-  document.getElementById("seglegend").innerHTML = cb.map(s=>`<span class="k"><span class="sw" style="background:${s.color}"></span>${s.label} · ${num(s.v)}</span>`).join("");
+  document.getElementById("att").innerHTML = d.needsAttention.map(a=>
+    `<div class="item"><div class="pill ${a.sev}"></div><div><div class="t">${a.title}</div><div class="d">${a.detail}</div></div></div>`).join("");
 
-  new Chart(document.getElementById("srcChart"),{type:"doughnut",
-    data:{labels:d.sources.map(s=>s.label),datasets:[{data:d.sources.map(s=>s.v),backgroundColor:["#c98a3c","#6ea8fe","#4a7c59","#d98a34"],borderWidth:0}]},
-    options:{cutout:"62%",plugins:{legend:{position:"right",labels:{boxWidth:10,font:{size:11}}}}}});
-
+  // reactivation
   const mc=d.messagesByChannel;
   document.getElementById("msg-total").textContent = kk(mc.totalUnread);
   const cmax=Math.max(...mc.channels.map(c=>c.v));
   document.getElementById("chan").innerHTML = mc.channels.map(c=>
     `<div class="r"><span class="nm">${c.c}</span><span class="track"><span class="fill" style="width:${cmax?Math.max(2,c.v/cmax*100):2}%;background:${c.color}"></span></span><span class="n">${c.v}</span></div>`).join("");
-  document.getElementById("msg-note").textContent = "Instagram DM = "+Math.round(mc.channels[0].v/mc.channels.reduce((a,b)=>a+b.v,0)*100)+"% of unread volume. Response-time/SLA analytics is off, so sent-vs-received & response times aren't tracked in-workspace.";
-  new Chart(document.getElementById("convChart"),{type:"doughnut",
-    data:{labels:d.conversations.map(c=>c.c),datasets:[{data:d.conversations.map(c=>c.v),backgroundColor:["#c98a3c","#6ea8fe","#4a7c59","#d98a34"],borderWidth:0}]},
-    options:{cutout:"64%",plugins:{legend:{position:"right",labels:{boxWidth:10,font:{size:11}}}}}});
+  document.getElementById("msg-note").textContent = "Instagram DM = "+Math.round(mc.channels[0].v/mc.channels.reduce((a,b)=>a+b.v,0)*100)+"% of unread volume. Response-time/SLA analytics is off in the workspace, so sent-vs-received & response times aren't tracked.";
+  document.getElementById("re-dm").textContent = mc.channels[0].v;
+  const unclass = (d.clientBase.find(x=>/unclass/i.test(x.label))||{}).v||0;
+  document.getElementById("re-unclass").textContent = kk(unclass);
+  document.getElementById("re-overdue").textContent = r.invoicesOverdueCount;
 
-  const ap=d.appointments, cl=d.calls, em=d.email;
-  document.getElementById("appt-win").textContent="· "+ap.window;
-  document.getElementById("ap-booked").textContent=ap.booked;
-  document.getElementById("ap-conf").textContent=ap.confirmed;
-  document.getElementById("ap-resc").textContent=ap.rescheduled;
-  document.getElementById("ap-ns").textContent=ap.noShow;
-  document.getElementById("call-win").textContent="· "+cl.window;
-  document.getElementById("cl-total").textContent=cl.total;
-  document.getElementById("cl-ans").textContent=cl.answeredPct+"%";
-  document.getElementById("cl-miss").textContent=cl.missedPct+"%";
-  document.getElementById("cl-avg").textContent=cl.avgSec+"s";
-  document.getElementById("em-win").textContent="· "+em.window;
-  document.getElementById("em-del").textContent=em.deliveredPct+"%";
-  document.getElementById("em-open").textContent=em.openPct+"%";
-  document.getElementById("em-click").textContent=em.clickPct+"%";
-  document.getElementById("em-sent").textContent="~"+em.sent;
-
+  // pipelines
   const pmax=Math.max(...d.pipeline.map(p=>p.n));
   document.getElementById("pipeline").innerHTML = d.pipeline.map(p=>
     `<div class="stage"><span class="nm">${p.s}</span><span class="bar" style="width:${Math.max(6,p.n/pmax*130)}px"></span><span class="ct">${p.n} opp${p.n!=1?"s":""}${p.v?" · "+fmt(p.v):""}</span></div>`).join("");
-  new Chart(document.getElementById("pkgChart"),{type:"bar",
+  charts.pkgChart = new Chart(document.getElementById("pkgChart"),{type:"bar",
     data:{labels:d.packages.map(p=>p.name),datasets:[{data:d.packages.map(p=>p.share),backgroundColor:"#4a7c59",borderRadius:6}]},
     options:{indexAxis:"y",plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.raw+"% of revenue"}}},scales:{x:{ticks:{callback:v=>v+"%"},grid:{color:"#eee5d6"}},y:{grid:{display:false},ticks:{font:{size:10.5}}}}}});
-
   const ps=d.pipelinesSummary;
   document.getElementById("pl-total").textContent=ps.total;
   document.getElementById("pl-active").innerHTML = ps.active.map(a=>
     `<div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid var(--line)"><span>${a.name}</span><b>${a.opps} opps</b></div><div class="note" style="margin:0 0 6px">${a.note}</div>`).join("");
-  document.getElementById("pl-ex").textContent = ps.examples.slice(0,4).join(" · ")+" +"+(ps.total-2-4)+" more";
+  document.getElementById("pl-ex").textContent = ps.examples.slice(0,5).join(" · ");
 
+  // conversations
+  charts.convChart = new Chart(document.getElementById("convChart"),{type:"doughnut",
+    data:{labels:d.conversations.map(c=>c.c),datasets:[{data:d.conversations.map(c=>c.v),backgroundColor:["#c98a3c","#6ea8fe","#4a7c59","#d98a34"],borderWidth:0}]},
+    options:{cutout:"64%",plugins:{legend:{position:"right",labels:{boxWidth:10,font:{size:11}}}}}});
+  const ap=d.appointments, cl=d.calls, em=d.email;
+  document.getElementById("appt-win").textContent="· "+ap.window;
+  document.getElementById("ap-booked").textContent=ap.booked; document.getElementById("ap-conf").textContent=ap.confirmed;
+  document.getElementById("ap-resc").textContent=ap.rescheduled; document.getElementById("ap-ns").textContent=ap.noShow;
+  document.getElementById("call-win").textContent="· "+cl.window;
+  document.getElementById("cl-total").textContent=cl.total; document.getElementById("cl-ans").textContent=cl.answeredPct+"%";
+  document.getElementById("cl-miss").textContent=cl.missedPct+"%"; document.getElementById("cl-avg").textContent=cl.avgSec+"s";
+  document.getElementById("em-win").textContent="· "+em.window;
+  document.getElementById("em-del").textContent=em.deliveredPct+"%"; document.getElementById("em-open").textContent=em.openPct+"%";
+  document.getElementById("em-click").textContent=em.clickPct+"%"; document.getElementById("em-sent").textContent="~"+em.sent;
+
+  // payments
+  document.getElementById("k-life2").textContent=fmt(life);
+  document.getElementById("k-recv").textContent=fmt(r.invoicesReceived||0)+" · "+r.invoicesReceivedCount;
+  document.getElementById("k-over2").textContent=fmt(r.invoicesOverdue);
   document.getElementById("sub-note").textContent=d.subscriptions.note;
   document.getElementById("sub-prod").innerHTML=d.subscriptions.products.map(p=>`<span class="tag">${p}</span>`).join("")+"<div class='note'>Gateways: "+d.subscriptions.gateways.join(", ")+"</div>";
-
   const at=d.attribution;
   document.getElementById("attr-win").textContent="· "+at.window;
-  document.getElementById("at-leads").textContent=num(at.leads);
-  document.getElementById("at-won").textContent=at.oppsWon;
+  document.getElementById("at-leads").textContent=num(at.leads); document.getElementById("at-won").textContent=at.oppsWon;
   document.getElementById("at-note").textContent=d.ads.note+". "+d.reputation.note+".";
+  document.getElementById("feed").innerHTML = d.activity.map(f=>{
+    const init=f.who.replace(/[^A-Za-z]/g,"").slice(0,2).toUpperCase();
+    return `<div class="fr"><div class="av">${init}</div><div><div style="font-weight:600">${f.who}</div><div style="font-size:11.5px;color:var(--muted)">${f.what} · ${f.when}</div></div><span class="amt">${fmt(f.amt)}</span><span class="st ${f.status}">${f.status}</span></div>`;
+  }).join("");
 
-  const od=d.opsDepth;
-  const OM=[
-    ["Active workflows", od.workflows.count, od.workflows.needsReview+" needs review"],
-    ["Funnels", od.funnels.groups, "groups of many"],
-    ["Forms", od.forms.count, "live forms"],
-    ["Top form subs", od.forms.topFormSubmissions, od.forms.topFormName],
-    ["Open tasks", od.tasks.total, od.tasks.overdue+" overdue"],
-    ["Pipelines", d.pipelinesSummary.total, "event funnels"]
-  ];
-  document.getElementById("ops-metrics").innerHTML = OM.map(m=>
-    `<div class="metric"><div class="l">${m[0]}</div><div class="v">${m[1]}</div><div class="s">${m[2]}</div></div>`).join("");
+  // clients
+  const cb=d.clientBase, tot=cb.reduce((a,b)=>a+b.v,0);
+  document.getElementById("cb-total").textContent=num(d.clients.total);
+  document.getElementById("segbar").innerHTML = cb.map(s=>`<div style="width:${(s.v/tot*100).toFixed(2)}%;background:${s.color}">${s.v/tot>0.06?num(s.v):""}</div>`).join("");
+  document.getElementById("seglegend").innerHTML = cb.map(s=>`<span class="k"><span class="sw" style="background:${s.color}"></span>${s.label} · ${num(s.v)}</span>`).join("");
+  charts.srcChart = new Chart(document.getElementById("srcChart"),{type:"doughnut",
+    data:{labels:d.sources.map(s=>s.label),datasets:[{data:d.sources.map(s=>s.v),backgroundColor:["#c98a3c","#6ea8fe","#4a7c59","#d98a34"],borderWidth:0}]},
+    options:{cutout:"62%",plugins:{legend:{position:"right",labels:{boxWidth:10,font:{size:11}}}}}});
+  const tags = d.contactTags||[];
+  if(tags.length){
+    const tmax=Math.max(...tags.map(t=>t.v));
+    document.getElementById("tags").innerHTML = tags.map(t=>
+      `<div class="r" style="display:flex;align-items:center;gap:12px;font-size:13px;margin-bottom:9px"><span style="width:190px">${t.label}</span><span style="flex:1;height:12px;background:#efe7d7;border-radius:8px;overflow:hidden"><span style="display:block;height:100%;border-radius:8px;background:#c98a3c;width:${Math.max(2,t.v/tmax*100)}%"></span></span><span style="width:60px;text-align:right;font-weight:700">${num(t.v)}</span></div>`).join("");
+  } else {
+    document.getElementById("tags").innerHTML = "<div class='note'>Tag/source breakdown pending live GHL pull (contacts carry tags like <span class='tag'>funding-manychat</span> <span class='tag'>website lead</span>).</div>";
+  }
+  document.getElementById("tags-note").textContent = d.contactTagsNote||"";
 
+  // social
   const s=d.social;
   document.getElementById("ig-foll").textContent=(s.followers/1000).toFixed(1)+"K";
-  document.getElementById("ig-posts").textContent=num(s.posts);
-  document.getElementById("ig-following").textContent=num(s.following);
-  new Chart(document.getElementById("igChart"),{type:"line",
+  document.getElementById("ig-posts").textContent=num(s.posts); document.getElementById("ig-following").textContent=num(s.following);
+  charts.igChart = new Chart(document.getElementById("igChart"),{type:"line",
     data:{labels:s.growthSeries.map((_,i)=>"W"+(i+1)),datasets:[{data:s.growthSeries,borderColor:"#6ea8fe",backgroundColor:"rgba(110,168,254,.15)",fill:true,tension:.4,pointRadius:0,borderWidth:2.5}]},
     options:{plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>(v/1000).toFixed(0)+"K"},grid:{color:"#eee5d6"}},x:{grid:{display:false}}}}});
-  document.getElementById("m-funded").textContent=d.marketing.funded;
-  document.getElementById("m-clients").textContent=d.marketing.clients;
-  document.getElementById("m-success").textContent=d.marketing.success;
-
+  document.getElementById("m-funded").textContent=d.marketing.funded; document.getElementById("m-clients").textContent=d.marketing.clients; document.getElementById("m-success").textContent=d.marketing.success;
   const pp=d.postPerformance;
-  new Chart(document.getElementById("postChart"),{type:"bar",
+  charts.postChart = new Chart(document.getElementById("postChart"),{type:"bar",
     data:{labels:pp.samples.map(p=>p.label),datasets:[
       {label:"Likes",data:pp.samples.map(p=>p.likes),backgroundColor:"#c98a3c",borderRadius:5},
       {label:"Comments",data:pp.samples.map(p=>p.comments),backgroundColor:"#6ea8fe",borderRadius:5}]},
@@ -607,18 +682,14 @@ function render(d){
   document.getElementById("tp-title").textContent="Top post: "+pp.topPost.title;
   document.getElementById("tp-sub").textContent=pp.topPost.comments+" comments · "+pp.topPost.engPct+"% engagement (vs ~"+pp.engagementRatePct+"% typical). Avg post ≈ "+pp.avgLikes+" likes / "+pp.avgComments+" comments.";
 
-  document.getElementById("att").innerHTML = d.needsAttention.map(a=>
-    `<div class="item"><div class="pill ${a.sev}"></div><div><div class="t">${a.title}</div><div class="d">${a.detail}</div></div></div>`).join("");
-
-  document.getElementById("feed").innerHTML = d.activity.map(f=>{
-    const init=f.who.split(" ").map(w=>w[0]).slice(0,2).join("");
-    return `<div class="fr"><div class="av">${init}</div><div><div style="font-weight:600">${f.who}</div><div style="font-size:11.5px;color:var(--muted)">${f.what} · ${f.when}</div></div><span class="amt">${fmt(f.amt)}</span><span class="st ${f.status}">${f.status}</span></div>`;
-  }).join("");
+  // settings
+  document.getElementById("biz").innerHTML =
+    "<b>"+d.business.name+"</b><br>Owner: "+d.business.owner+" ("+d.business.handle+")<br>"+
+    d.business.website+" · "+d.business.phone+"<br>"+d.business.location+"<br>GHL location: "+d.business.ghlLocationId;
+  document.getElementById("srcs2").innerHTML = d.dataSources.map(s=>`<div class="s" style="color:#5f6b7a;padding:5px 0"><span class="dot"></span> ${s.name} — ${s.detail}</div>`).join("");
 
   document.getElementById("foot").innerHTML =
-    "Sources: GoHighLevel (Dashboard, Reporting, Conversations, Opportunities/45 pipelines, Payments), Instagram @amob_gocrazy, jka-consulting.com. Pulled from JKA's workspace on "+d.updated+". "+
-    "Verified: June collected & MTD, invoices, contacts, 45 pipelines + stage counts, conversation/lead/appointment/call/email stats, attribution, and IG profile + per-post engagement. "+
-    "Indicative pending live API sync: pre-June revenue points, IG weekly-growth curve, LTV/avg-payment, and package revenue shares.";
+    "Sources: GoHighLevel (Dashboard, Reporting, Conversations, Opportunities/45 pipelines, Payments), Instagram @amob_gocrazy, jka-consulting.com. Snapshot "+d.updated+".";
 }
 boot();
 </script>
