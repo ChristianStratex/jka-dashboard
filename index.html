@@ -147,7 +147,7 @@
 
     <!-- DASHBOARD -->
     <section class="view active" id="v-dashboard">
-      <div class="metrics" id="metrics"></div>
+      <div class="metrics" id="metrics" style="grid-template-columns:repeat(5,1fr)"></div>
       <div class="grid">
         <div class="card">
           <div class="heroflex">
@@ -172,18 +172,17 @@
           <div class="kpi"><span class="l">Total contacts</span><span class="v" id="k-total">—</span></div>
         </div>
       </div>
-      <div class="sec-label">Business at a glance</div>
+      <div class="sec-label">A little of everything</div>
       <div class="row3">
-        <div class="card"><h3>Funding pipeline</h3><div class="ovlist" id="ov-fund"></div></div>
-        <div class="card"><h3>Reactivation queue</h3><div class="ovlist" id="ov-react"></div></div>
-        <div class="card"><h3>Social — @amob_gocrazy</h3><div class="ovlist" id="ov-social"></div></div>
+        <div class="card"><h3>Client base</h3><canvas id="dClient" height="180"></canvas></div>
+        <div class="card"><h3>Unread by channel</h3><canvas id="dConv" height="180"></canvas></div>
+        <div class="card"><h3>Revenue by product</h3><canvas id="dProd" height="180"></canvas></div>
       </div>
-      <div class="row3">
-        <div class="card"><h3>Conversations</h3><div class="ovlist" id="ov-conv"></div></div>
-        <div class="card"><h3>Operations (recent)</h3><div class="ovlist" id="ov-ops"></div></div>
-        <div class="card"><h3>Top products</h3><div class="ovlist" id="ov-prod"></div></div>
+      <div class="row2">
+        <div class="card"><h3>Funding pipeline — 39 open</h3><canvas id="dPipe" height="140"></canvas></div>
+        <div class="card"><h3>Instagram followers</h3><canvas id="dSocial" height="140"></canvas></div>
       </div>
-      <div class="sec-label">Needs attention</div>
+      <div class="sec-label">Needs attention &amp; activity</div>
       <div class="row2">
         <div class="card"><div class="att" id="att"></div></div>
         <div class="card"><h3>Recent activity</h3><div class="feed" id="ov-feed"></div></div>
@@ -347,16 +346,20 @@
 
     <!-- SOCIAL -->
     <section class="view" id="v-social">
-      <div class="sec-label">Social — @amob_gocrazy</div>
+      <div class="sec-label">Social — @amob_gocrazy · Adreain Brown</div>
+      <div class="metrics" style="grid-template-columns:repeat(6,1fr)">
+        <div class="metric"><div class="l">Followers</div><div class="v" id="sm-foll">—</div><div class="s">+600 · 5d</div></div>
+        <div class="metric"><div class="l">Posts</div><div class="v" id="sm-posts">—</div><div class="s">reels-heavy</div></div>
+        <div class="metric"><div class="l">Following</div><div class="v" id="sm-following">—</div><div class="s"></div></div>
+        <div class="metric"><div class="l">Avg likes</div><div class="v" id="sm-likes">—</div><div class="s">per post</div></div>
+        <div class="metric"><div class="l">Avg comments</div><div class="v" id="sm-comments">—</div><div class="s">per post</div></div>
+        <div class="metric"><div class="l">Engagement</div><div class="v" id="sm-eng">—</div><div class="s">typical</div></div>
+      </div>
       <div class="row2">
         <div class="card">
-          <h3>Instagram growth</h3>
-          <div class="social-row" style="margin:8px 0 6px">
-            <div class="stat"><b id="ig-foll">—</b><span>followers</span></div>
-            <div class="stat"><b id="ig-posts">—</b><span>posts</span></div>
-            <div class="stat"><b id="ig-following">—</b><span>following</span></div>
-          </div>
-          <canvas id="igChart" height="80"></canvas>
+          <h3>Follower growth</h3>
+          <canvas id="igChart" height="110"></canvas>
+          <div class="note" id="ig-note"></div>
           <div class="mstrip">
             <div class="m"><b id="m-funded">—</b><span>funding secured</span></div>
             <div class="m"><b id="m-clients">—</b><span>clients helped</span></div>
@@ -364,12 +367,25 @@
           </div>
         </div>
         <div class="card">
-          <h3>Post performance</h3>
+          <h3>Recent post performance</h3>
           <canvas id="postChart" height="120"></canvas>
           <div class="toppost">
             <div class="big" id="tp-likes">—</div>
             <div><div style="font-weight:700;font-size:13px" id="tp-title">—</div><div class="note" id="tp-sub"></div></div>
           </div>
+        </div>
+      </div>
+      <div class="row2">
+        <div class="card">
+          <h3>Top vs typical post</h3>
+          <canvas id="sEng" height="150"></canvas>
+          <div class="note">Event/promo posts hugely outperform everyday content — lean into event hype for reach.</div>
+        </div>
+        <div class="card">
+          <h3>Content &amp; profile</h3>
+          <div class="note" id="s-bio"></div>
+          <div id="s-tags" style="margin-top:8px"></div>
+          <div class="note" id="s-content"></div>
         </div>
       </div>
     </section>
@@ -587,7 +603,7 @@ const fmtK = n => n>=1000 ? "$"+(n/1000).toFixed(n%1000?1:0)+"K" : "$"+n;
 const kk = n => n>=1000 ? (n/1000).toFixed(n>=10000?0:1)+"K" : n;
 const num = n => (n||0).toLocaleString();
 const charts = {};
-const viewCharts = { dashboard:["revChart"], conversations:["convChart"], pipelines:["pkgChart"], clients:["srcChart"], social:["igChart","postChart"] };
+const viewCharts = { dashboard:["revChart","dClient","dConv","dProd","dPipe","dSocial"], conversations:["convChart"], pipelines:["pkgChart"], clients:["srcChart"], social:["igChart","postChart","sEng"] };
 const titles = { dashboard:"Executive Dashboard", reactivation:"Reactivation", pipelines:"Pipelines", conversations:"Conversations", payments:"Payments", clients:"Clients", social:"Social", settings:"Settings" };
 
 function switchView(v){
@@ -636,14 +652,11 @@ function render(d){
   const r=d.revenue;
   const life = r.lifetimeCollected;
   const M=[
-    ["Collected · Jun", fmtK(r.lastMonth), "▲"+r.changeVsPrev+"%"],
-    ["MTD · Jul", fmtK(r.monthToDate), ""],
-    [r.lifetimeLabel||"Invoiced", fmtK(life), r.lifetimeNote||""],
-    ["Overdue", fmtK(r.invoicesOverdue), r.invoicesOverdueCount+" invoices"],
-    ["Pending pmts", num(r.pendingCount), "to capture"],
+    ["Collected / invoiced", fmtK(life), r.invoicesReceivedCount+" invoices"],
+    ["Overdue to recover", fmtK(r.invoicesOverdue), r.invoicesOverdueCount+" invoices"],
+    ["Pending payments", num(r.pendingCount), "to capture"],
     ["Leads (30d)", num(d.clients.leads30d), d.clients.leadsWeek+"/wk"],
-    ["IG followers", kk(d.social.followers), d.social.posts+" posts"],
-    ["Pipelines", d.pipelinesSummary.total, "funnels"]
+    ["IG followers", kk(d.social.followers), "+600 · 5d"]
   ];
   document.getElementById("metrics").innerHTML = M.map(m=>
     `<div class="metric"><div class="l">${m[0]}</div><div class="v">${m[1]}</div><div class="s">${m[2]}</div></div>`).join("");
@@ -671,22 +684,21 @@ function render(d){
   document.getElementById("att").innerHTML = d.needsAttention.map(a=>
     `<div class="item"><div class="pill ${a.sev}"></div><div><div class="t">${a.title}</div><div class="d">${a.detail}</div></div></div>`).join("");
 
-  // business-at-a-glance overview
-  const ovr=(l,v,c)=>`<div class="ovr"><span>${l}</span><b class="${c||''}">${v}</b></div>`;
-  document.getElementById("ov-fund").innerHTML =
-    ovr("Open opportunities","39")+ovr("Ready for funding","3","g")+ovr("Awaiting signature","13","w")+ovr("Total pipelines / funnels",d.pipelinesSummary.total);
-  document.getElementById("ov-react").innerHTML =
-    ovr("Unread IG DMs",num(d.messagesByChannel.channels[0].v),"b")+ovr("Pending payments",num(r.pendingCount),"w")+ovr("Credit-repair leads","59")+ovr("Dormant / unclassified",kk(27449));
-  const s0=d.social,pp0=d.postPerformance;
-  document.getElementById("ov-social").innerHTML =
-    ovr("Followers",(s0.followers/1000).toFixed(1)+"K","g")+ovr("Posts",num(s0.posts))+ovr("Top post",num(pp0.topPost.likes)+" likes")+ovr("Growth (5d)","+600","g");
-  document.getElementById("ov-conv").innerHTML =
-    ovr("Total unread",kk(d.messagesByChannel.totalUnread))+ovr("Instagram DM",num(d.conversations[0].v))+ovr("SMS",num(30))+ovr("Email / Call","3 / 8");
-  const ap0=d.appointments,cl0=d.calls,em0=d.email;
-  document.getElementById("ov-ops").innerHTML =
-    ovr("Appointments booked",ap0.booked)+ovr("Calls answered",cl0.answeredPct+"%","g")+ovr("Email open rate",em0.openPct+"%")+ovr("Leads (30d)",num(d.clients.leads30d));
-  document.getElementById("ov-prod").innerHTML =
-    d.packages.slice(0,5).map(p=>ovr(p.name.replace(/\s*\(.*/,""),p.share+"%")).join("");
+  // dashboard overview charts
+  const donutOpt={cutout:"60%",plugins:{legend:{position:"right",labels:{boxWidth:9,font:{size:10.5}}}}};
+  charts.dClient = new Chart(document.getElementById("dClient"),{type:"doughnut",
+    data:{labels:d.clientBase.map(x=>x.label),datasets:[{data:d.clientBase.map(x=>x.v),backgroundColor:d.clientBase.map(x=>x.color),borderWidth:0}]},options:donutOpt});
+  charts.dConv = new Chart(document.getElementById("dConv"),{type:"doughnut",
+    data:{labels:d.conversations.map(c=>c.c),datasets:[{data:d.conversations.map(c=>c.v),backgroundColor:["#c98a3c","#6ea8fe","#4a7c59","#9b8cff","#d98a34"],borderWidth:0}]},options:donutOpt});
+  charts.dProd = new Chart(document.getElementById("dProd"),{type:"bar",
+    data:{labels:d.packages.map(p=>p.name.replace(/\s*\(.*/,"")),datasets:[{data:d.packages.map(p=>p.share),backgroundColor:"#4a7c59",borderRadius:5}]},
+    options:{indexAxis:"y",plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.raw+"% of revenue"}}},scales:{x:{ticks:{callback:v=>v+"%"},grid:{color:"#eee5d6"}},y:{grid:{display:false},ticks:{font:{size:10}}}}}});
+  charts.dPipe = new Chart(document.getElementById("dPipe"),{type:"bar",
+    data:{labels:d.pipeline.map(p=>p.s.replace(" – waiting Signature"," (sig)").replace("Captured & Contract Sent","Contract sent")),datasets:[{data:d.pipeline.map(p=>p.n),backgroundColor:"#c98a3c",borderRadius:5}]},
+    options:{plugins:{legend:{display:false}},scales:{y:{grid:{color:"#eee5d6"},ticks:{stepSize:5}},x:{grid:{display:false},ticks:{font:{size:9}}}}}});
+  charts.dSocial = new Chart(document.getElementById("dSocial"),{type:"line",
+    data:{labels:d.social.growthLabels,datasets:[{data:d.social.growthSeries,borderColor:"#6ea8fe",backgroundColor:"rgba(110,168,254,.15)",fill:true,tension:.3,pointRadius:5,pointBackgroundColor:"#6ea8fe",borderWidth:2.5}]},
+    options:{plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>(v/1000).toFixed(1)+"K"},grid:{color:"#eee5d6"}},x:{grid:{display:false}}}}});
   document.getElementById("ov-feed").innerHTML = d.activity.slice(0,6).map(f=>{
     const init=f.who.replace(/[^A-Za-z]/g,"").slice(0,2).toUpperCase();
     return `<div class="fr"><div class="av">${init}</div><div><div style="font-weight:600">${f.who}</div><div style="font-size:11.5px;color:var(--muted)">${f.what} · ${f.when}</div></div><span class="amt">${fmt(f.amt)}</span><span class="st ${f.status}">${f.status}</span></div>`;
@@ -781,22 +793,34 @@ function render(d){
   document.getElementById("tags-note").textContent = d.contactTagsNote||"";
 
   // social
-  const s=d.social;
-  document.getElementById("ig-foll").textContent=(s.followers/1000).toFixed(1)+"K";
-  document.getElementById("ig-posts").textContent=num(s.posts); document.getElementById("ig-following").textContent=num(s.following);
+  const s=d.social, pp=d.postPerformance;
+  document.getElementById("sm-foll").textContent=(s.followers/1000).toFixed(1)+"K";
+  document.getElementById("sm-posts").textContent=num(s.posts);
+  document.getElementById("sm-following").textContent=num(s.following);
+  document.getElementById("sm-likes").textContent=num(pp.avgLikes);
+  document.getElementById("sm-comments").textContent=num(pp.avgComments);
+  document.getElementById("sm-eng").textContent=pp.engagementRatePct+"%";
+  document.getElementById("ig-note").textContent=s.growthNote||"";
   charts.igChart = new Chart(document.getElementById("igChart"),{type:"line",
-    data:{labels:s.growthLabels||s.growthSeries.map((_,i)=>"W"+(i+1)),datasets:[{data:s.growthSeries,borderColor:"#6ea8fe",backgroundColor:"rgba(110,168,254,.15)",fill:true,tension:.4,pointRadius:4,pointBackgroundColor:"#6ea8fe",borderWidth:2.5}]},
-    options:{plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>(v/1000).toFixed(0)+"K"},grid:{color:"#eee5d6"}},x:{grid:{display:false}}}}});
+    data:{labels:s.growthLabels||s.growthSeries.map((_,i)=>"W"+(i+1)),datasets:[{data:s.growthSeries,borderColor:"#6ea8fe",backgroundColor:"rgba(110,168,254,.15)",fill:true,tension:.3,pointRadius:5,pointBackgroundColor:"#6ea8fe",borderWidth:2.5}]},
+    options:{plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>(v/1000).toFixed(1)+"K"},grid:{color:"#eee5d6"}},x:{grid:{display:false}}}}});
   document.getElementById("m-funded").textContent=d.marketing.funded; document.getElementById("m-clients").textContent=d.marketing.clients; document.getElementById("m-success").textContent=d.marketing.success;
-  const pp=d.postPerformance;
   charts.postChart = new Chart(document.getElementById("postChart"),{type:"bar",
     data:{labels:pp.samples.map(p=>p.label),datasets:[
       {label:"Likes",data:pp.samples.map(p=>p.likes),backgroundColor:"#c98a3c",borderRadius:5},
       {label:"Comments",data:pp.samples.map(p=>p.comments),backgroundColor:"#6ea8fe",borderRadius:5}]},
-    options:{plugins:{legend:{labels:{boxWidth:10,font:{size:11}}}},scales:{y:{grid:{color:"#eee5d6"}},x:{grid:{display:false},ticks:{font:{size:9.5}}}}}});
+    options:{plugins:{legend:{labels:{boxWidth:10,font:{size:11}}}},scales:{y:{grid:{color:"#eee5d6"}},x:{grid:{display:false},ticks:{font:{size:9}}}}}});
   document.getElementById("tp-likes").textContent=num(pp.topPost.likes)+"♥";
   document.getElementById("tp-title").textContent="Top post: "+pp.topPost.title;
-  document.getElementById("tp-sub").textContent=pp.topPost.comments+" comments · "+pp.topPost.engPct+"% engagement (vs ~"+pp.engagementRatePct+"% typical). Avg post ≈ "+pp.avgLikes+" likes / "+pp.avgComments+" comments.";
+  document.getElementById("tp-sub").textContent=pp.topPost.comments+" comments · "+pp.topPost.engPct+"% engagement (vs ~"+pp.engagementRatePct+"% typical).";
+  charts.sEng = new Chart(document.getElementById("sEng"),{type:"bar",
+    data:{labels:["Typical post","Top post"],datasets:[
+      {label:"Likes",data:[pp.avgLikes,pp.topPost.likes],backgroundColor:"#c98a3c",borderRadius:6},
+      {label:"Comments",data:[pp.avgComments,pp.topPost.comments],backgroundColor:"#6ea8fe",borderRadius:6}]},
+    options:{plugins:{legend:{labels:{boxWidth:10,font:{size:11}}}},scales:{y:{grid:{color:"#eee5d6"}},x:{grid:{display:false}}}}});
+  document.getElementById("s-bio").textContent="Bio: Entrepreneur · Need Access To 150k In Funding · Your SIMPLE route to a RICHER life · $84M FUNDED FOR CLIENTS · LLD. Verified.";
+  document.getElementById("s-tags").innerHTML=["Funding","Unforgettable","🎤🔥","🤷🏽‍♂️"].map(t=>`<span class="tag">${t}</span>`).join("");
+  document.getElementById("s-content").textContent="Content: almost all Reels/video — funding wins, client testimonials, event promos (Podcast Summit), lifestyle. This IG is the top of funnel, driving "+num(d.messagesByChannel.channels[0].v)+" unread DMs and 131 social leads/mo via ManyChat.";
 
   // settings
   document.getElementById("biz").innerHTML =
