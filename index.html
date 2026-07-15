@@ -132,11 +132,11 @@
         <h1 id="view-title">Executive Dashboard</h1>
         <div class="sub" id="subline">Loading…</div>
       </div>
-      <div class="chips">
-        <span class="chip">Day</span>
-        <span class="chip active">Week</span>
-        <span class="chip">Month</span>
-        <span class="chip">Custom range</span>
+      <div class="chips" id="period-chips">
+        <span class="chip active" data-period="month">This month</span>
+        <span class="chip" data-period="last">Last month</span>
+        <span class="chip" data-period="week">This week</span>
+        <span class="chip" data-period="today">Today</span>
       </div>
     </div>
 
@@ -147,12 +147,12 @@
         <div class="card">
           <div class="heroflex">
             <div>
-              <h3>Collected — <span id="hero-label"></span></h3>
+              <h3 id="hero-label">Collected</h3>
               <div class="hero-num" id="hero-num">—</div>
               <span class="delta" id="hero-delta"></span>
             </div>
             <div style="text-align:right">
-              <h3>Month to date</h3>
+              <h3 id="mtd-title">Last month</h3>
               <div style="font-size:24px;font-weight:800" id="mtd">—</div>
               <span style="font-size:11.5px;color:var(--muted)" id="mtd-label"></span>
             </div>
@@ -261,15 +261,27 @@
 
     <!-- PAYMENTS -->
     <section class="view" id="v-payments">
-      <div class="sec-label">Payments</div>
-      <div class="metrics" style="grid-template-columns:repeat(5,1fr)">
-        <div class="metric"><div class="l">Collected · Jun</div><div class="v" id="k-jun">—</div><div class="s">109 txns</div></div>
-        <div class="metric"><div class="l">MTD · Jul</div><div class="v" id="k-mtd2">—</div><div class="s"></div></div>
-        <div class="metric"><div class="l">Invoiced to date</div><div class="v" id="k-life2">—</div><div class="s" id="k-recv">—</div></div>
-        <div class="metric"><div class="l">Overdue</div><div class="v" id="k-over2">—</div><div class="s">54 invoices</div></div>
-        <div class="metric"><div class="l">Pending payments</div><div class="v" id="k-pend">—</div><div class="s">to capture</div></div>
+      <div class="sec-label">Payments — paid vs pending</div>
+      <div class="row2">
+        <div class="card" style="border-left:4px solid var(--good)">
+          <h3 style="color:var(--good)">● Paid / Collected</h3>
+          <div class="hero-num" id="k-life2" style="font-size:36px">—</div>
+          <div class="note" style="margin-top:2px">across <span id="k-recv">—</span> · money in the bank</div>
+          <div class="social-row" style="margin-top:14px">
+            <div class="stat"><b id="k-jun">—</b><span>June collected</span></div>
+            <div class="stat"><b id="k-mtd2">—</b><span>July MTD</span></div>
+          </div>
+        </div>
+        <div class="card" style="border-left:4px solid var(--warn);background:#fffaf1">
+          <h3 style="color:var(--warn)">● Pending</h3>
+          <div class="hero-num" id="k-pend" style="font-size:36px;color:var(--warn)">—</div>
+          <div class="note" id="pend-note" style="margin-top:2px"></div>
+          <div class="social-row" style="margin-top:14px">
+            <div class="stat"><b id="k-over2">—</b><span>overdue (54)</span></div>
+            <div class="stat"><b id="k-draftdue">—</b><span>draft + due</span></div>
+          </div>
+        </div>
       </div>
-      <div class="note" id="pend-note" style="margin:10px 2px 0"></div>
       <div class="row2">
         <div class="card">
           <h3>Subscriptions / MRR</h3>
@@ -575,6 +587,22 @@ async function boot(){
   });
 }
 
+function setPeriod(p){
+  const d = window.__D__; if(!d) return;
+  const r = d.revenue, c = d.clients;
+  const set = (lbl,num,delta,rt,rv,rs) => {
+    document.getElementById("hero-label").textContent = lbl;
+    document.getElementById("hero-num").textContent = num;
+    document.getElementById("hero-delta").textContent = delta;
+    document.getElementById("mtd-title").textContent = rt;
+    document.getElementById("mtd").textContent = rv;
+    document.getElementById("mtd-label").textContent = rs;
+  };
+  if(p==="month") set("Collected — "+r.monthToDateLabel, fmt(r.monthToDate), "Month in progress", "Last month ("+r.lastMonthLabel+")", fmt(r.lastMonth), r.juneTransactions+" payments");
+  else if(p==="last") set("Collected — "+r.lastMonthLabel, fmt(r.lastMonth), r.juneTransactions+" payments · full month", "This month (MTD)", fmt(r.monthToDate), r.monthToDateLabel);
+  else if(p==="week") set("New leads — this week", num(c.leadsWeek), c.leadsToday+" today", "New contacts (30d)", "+"+num(c.newThisMonth), "vs "+num(c.leads30d)+" leads");
+  else if(p==="today") set("New leads — today", num(c.leadsToday), c.leadsWeek+" this week", "Appointments booked", num(d.appointments.booked), d.appointments.window);
+}
 function render(d){
   document.getElementById("b-name").textContent = d.business.name.replace(" LLC","");
   document.getElementById("b-loc").textContent = d.business.location;
@@ -599,11 +627,13 @@ function render(d){
   document.getElementById("metrics").innerHTML = M.map(m=>
     `<div class="metric"><div class="l">${m[0]}</div><div class="v">${m[1]}</div><div class="s">${m[2]}</div></div>`).join("");
 
-  document.getElementById("hero-label").textContent = r.lastMonthLabel;
-  document.getElementById("hero-num").textContent = fmt(r.lastMonth);
-  document.getElementById("hero-delta").textContent = "▲ "+r.changeVsPrev+"% vs prior period";
-  document.getElementById("mtd").textContent = fmt(r.monthToDate);
-  document.getElementById("mtd-label").textContent = r.monthToDateLabel;
+  window.__D__ = d;
+  setPeriod("month");
+  document.getElementById("period-chips").addEventListener("click", e=>{
+    const c = e.target.closest(".chip[data-period]"); if(!c) return;
+    document.querySelectorAll("#period-chips .chip").forEach(x=>x.classList.toggle("active", x===c));
+    setPeriod(c.dataset.period);
+  });
   document.getElementById("k-life").textContent = fmt(life);
   document.getElementById("k-over").textContent = fmt(r.invoicesOverdue);
   document.getElementById("k-leads").textContent = num(d.clients.leads30d);
@@ -676,7 +706,8 @@ function render(d){
   document.getElementById("k-life2").textContent=fmtK(life);
   document.getElementById("k-recv").textContent=r.invoicesReceivedCount+" invoices";
   document.getElementById("k-over2").textContent=fmtK(r.invoicesOverdue);
-  document.getElementById("k-pend").textContent=num(r.pendingCount);
+  document.getElementById("k-pend").textContent=num(r.pendingCount)+" pmts";
+  document.getElementById("k-draftdue").textContent=fmtK((r.invoicesDraft||0)+(r.invoicesDue||0));
   document.getElementById("pend-note").textContent=r.pendingNote||"";
   document.getElementById("sub-note").textContent=d.subscriptions.note;
   document.getElementById("sub-prod").innerHTML=d.subscriptions.products.map(p=>`<span class="tag">${p}</span>`).join("")+"<div class='note'>Gateways: "+d.subscriptions.gateways.join(", ")+"</div>";
