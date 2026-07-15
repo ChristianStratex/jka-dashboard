@@ -98,6 +98,11 @@
   .toppost .big{font-size:22px;font-weight:800;color:var(--accent);white-space:nowrap}
   .note{font-size:12px;color:var(--muted);line-height:1.5;margin-top:8px}
   .tag{display:inline-block;background:#efe7d7;color:#6b5a3a;border-radius:6px;padding:2px 8px;font-size:11px;margin:3px 4px 0 0}
+  .ovlist{margin-top:6px}
+  .ovr{display:flex;justify-content:space-between;gap:10px;padding:6px 0;font-size:13px;border-bottom:1px solid var(--line)}
+  .ovr:last-child{border-bottom:0}
+  .ovr b{font-weight:750;white-space:nowrap}
+  .ovr .g{color:var(--good)} .ovr .w{color:var(--warn)} .ovr .b{color:var(--bad)}
   .foot{color:var(--muted);font-size:11px;margin-top:24px;line-height:1.6}
   .view{display:none}
   .view.active{display:block}
@@ -167,8 +172,22 @@
           <div class="kpi"><span class="l">Total contacts</span><span class="v" id="k-total">—</span></div>
         </div>
       </div>
+      <div class="sec-label">Business at a glance</div>
+      <div class="row3">
+        <div class="card"><h3>Funding pipeline</h3><div class="ovlist" id="ov-fund"></div></div>
+        <div class="card"><h3>Reactivation queue</h3><div class="ovlist" id="ov-react"></div></div>
+        <div class="card"><h3>Social — @amob_gocrazy</h3><div class="ovlist" id="ov-social"></div></div>
+      </div>
+      <div class="row3">
+        <div class="card"><h3>Conversations</h3><div class="ovlist" id="ov-conv"></div></div>
+        <div class="card"><h3>Operations (recent)</h3><div class="ovlist" id="ov-ops"></div></div>
+        <div class="card"><h3>Top products</h3><div class="ovlist" id="ov-prod"></div></div>
+      </div>
       <div class="sec-label">Needs attention</div>
-      <div class="row2" style="grid-template-columns:1fr"><div class="card"><div class="att" id="att"></div></div></div>
+      <div class="row2">
+        <div class="card"><div class="att" id="att"></div></div>
+        <div class="card"><h3>Recent activity</h3><div class="feed" id="ov-feed"></div></div>
+      </div>
     </section>
 
     <!-- REACTIVATION -->
@@ -519,10 +538,12 @@
     "forms": { "count": 61, "topFormSubmissions": 61, "topFormName": "Podcast Summit Event" }
   },
   "social": {
-    "followers": 66600,
-    "posts": 899,
-    "following": 4263,
-    "growthSeries": [63100, 63900, 64600, 65200, 65900, 66600]
+    "followers": 67200,
+    "posts": 900,
+    "following": 4277,
+    "growthSeries": [66600, 67200],
+    "growthLabels": ["Jul 9", "Jul 14"],
+    "growthNote": "Verified snapshots: 66.6K (Jul 9) → 67.2K (Jul 14) = +600 in 5 days (~+3.6K/mo pace)."
   },
   "postPerformance": {
     "avgLikes": 150,
@@ -650,6 +671,27 @@ function render(d){
   document.getElementById("att").innerHTML = d.needsAttention.map(a=>
     `<div class="item"><div class="pill ${a.sev}"></div><div><div class="t">${a.title}</div><div class="d">${a.detail}</div></div></div>`).join("");
 
+  // business-at-a-glance overview
+  const ovr=(l,v,c)=>`<div class="ovr"><span>${l}</span><b class="${c||''}">${v}</b></div>`;
+  document.getElementById("ov-fund").innerHTML =
+    ovr("Open opportunities","39")+ovr("Ready for funding","3","g")+ovr("Awaiting signature","13","w")+ovr("Total pipelines / funnels",d.pipelinesSummary.total);
+  document.getElementById("ov-react").innerHTML =
+    ovr("Unread IG DMs",num(d.messagesByChannel.channels[0].v),"b")+ovr("Pending payments",num(r.pendingCount),"w")+ovr("Credit-repair leads","59")+ovr("Dormant / unclassified",kk(27449));
+  const s0=d.social,pp0=d.postPerformance;
+  document.getElementById("ov-social").innerHTML =
+    ovr("Followers",(s0.followers/1000).toFixed(1)+"K","g")+ovr("Posts",num(s0.posts))+ovr("Top post",num(pp0.topPost.likes)+" likes")+ovr("Growth (5d)","+600","g");
+  document.getElementById("ov-conv").innerHTML =
+    ovr("Total unread",kk(d.messagesByChannel.totalUnread))+ovr("Instagram DM",num(d.conversations[0].v))+ovr("SMS",num(30))+ovr("Email / Call","3 / 8");
+  const ap0=d.appointments,cl0=d.calls,em0=d.email;
+  document.getElementById("ov-ops").innerHTML =
+    ovr("Appointments booked",ap0.booked)+ovr("Calls answered",cl0.answeredPct+"%","g")+ovr("Email open rate",em0.openPct+"%")+ovr("Leads (30d)",num(d.clients.leads30d));
+  document.getElementById("ov-prod").innerHTML =
+    d.packages.slice(0,5).map(p=>ovr(p.name.replace(/\s*\(.*/,""),p.share+"%")).join("");
+  document.getElementById("ov-feed").innerHTML = d.activity.slice(0,6).map(f=>{
+    const init=f.who.replace(/[^A-Za-z]/g,"").slice(0,2).toUpperCase();
+    return `<div class="fr"><div class="av">${init}</div><div><div style="font-weight:600">${f.who}</div><div style="font-size:11.5px;color:var(--muted)">${f.what} · ${f.when}</div></div><span class="amt">${fmt(f.amt)}</span><span class="st ${f.status}">${f.status}</span></div>`;
+  }).join("");
+
   // reactivation
   const mc=d.messagesByChannel;
   document.getElementById("msg-total").textContent = kk(mc.totalUnread);
@@ -743,7 +785,7 @@ function render(d){
   document.getElementById("ig-foll").textContent=(s.followers/1000).toFixed(1)+"K";
   document.getElementById("ig-posts").textContent=num(s.posts); document.getElementById("ig-following").textContent=num(s.following);
   charts.igChart = new Chart(document.getElementById("igChart"),{type:"line",
-    data:{labels:s.growthSeries.map((_,i)=>"W"+(i+1)),datasets:[{data:s.growthSeries,borderColor:"#6ea8fe",backgroundColor:"rgba(110,168,254,.15)",fill:true,tension:.4,pointRadius:0,borderWidth:2.5}]},
+    data:{labels:s.growthLabels||s.growthSeries.map((_,i)=>"W"+(i+1)),datasets:[{data:s.growthSeries,borderColor:"#6ea8fe",backgroundColor:"rgba(110,168,254,.15)",fill:true,tension:.4,pointRadius:4,pointBackgroundColor:"#6ea8fe",borderWidth:2.5}]},
     options:{plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>(v/1000).toFixed(0)+"K"},grid:{color:"#eee5d6"}},x:{grid:{display:false}}}}});
   document.getElementById("m-funded").textContent=d.marketing.funded; document.getElementById("m-clients").textContent=d.marketing.clients; document.getElementById("m-success").textContent=d.marketing.success;
   const pp=d.postPerformance;

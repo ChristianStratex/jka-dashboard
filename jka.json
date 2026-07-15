@@ -143,10 +143,12 @@
     "forms": { "count": 61, "topFormSubmissions": 61, "topFormName": "Podcast Summit Event" }
   },
   "social": {
-    "followers": 66600,
-    "posts": 899,
-    "following": 4263,
-    "growthSeries": [63100, 63900, 64600, 65200, 65900, 66600]
+    "followers": 67200,
+    "posts": 900,
+    "following": 4277,
+    "growthSeries": [66600, 67200],
+    "growthLabels": ["Jul 9", "Jul 14"],
+    "growthNote": "Verified snapshots: 66.6K (Jul 9) → 67.2K (Jul 14) = +600 in 5 days (~+3.6K/mo pace)."
   },
   "postPerformance": {
     "avgLikes": 150,
