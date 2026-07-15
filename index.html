@@ -207,11 +207,16 @@
           <canvas id="pkgChart" height="160"></canvas>
         </div>
       </div>
-      <div class="row2" style="grid-template-columns:1fr">
+      <div class="row2">
         <div class="card">
           <h3>All pipelines — <span id="pl-total"></span> total</h3>
           <div id="pl-active" style="margin-top:8px"></div>
           <div class="note">Event &amp; challenge funnels: <span id="pl-ex"></span></div>
+        </div>
+        <div class="card">
+          <h3>Conversion funnel (30d)</h3>
+          <div class="pl" id="funnel"></div>
+          <div class="note" id="funnel-note"></div>
         </div>
       </div>
     </section>
@@ -257,11 +262,14 @@
     <!-- PAYMENTS -->
     <section class="view" id="v-payments">
       <div class="sec-label">Payments</div>
-      <div class="row3">
-        <div class="kpi"><span class="l">Invoiced to date</span><span class="v" id="k-life2">—</span></div>
-        <div class="kpi"><span class="l">Invoices received</span><span class="v" id="k-recv">—</span></div>
-        <div class="kpi"><span class="l">Invoices overdue</span><span class="v" id="k-over2">—</span></div>
+      <div class="metrics" style="grid-template-columns:repeat(5,1fr)">
+        <div class="metric"><div class="l">Collected · Jun</div><div class="v" id="k-jun">—</div><div class="s">109 txns</div></div>
+        <div class="metric"><div class="l">MTD · Jul</div><div class="v" id="k-mtd2">—</div><div class="s"></div></div>
+        <div class="metric"><div class="l">Invoiced to date</div><div class="v" id="k-life2">—</div><div class="s" id="k-recv">—</div></div>
+        <div class="metric"><div class="l">Overdue</div><div class="v" id="k-over2">—</div><div class="s">54 invoices</div></div>
+        <div class="metric"><div class="l">Pending payments</div><div class="v" id="k-pend">—</div><div class="s">to capture</div></div>
       </div>
+      <div class="note" id="pend-note" style="margin:10px 2px 0"></div>
       <div class="row2">
         <div class="card">
           <h3>Subscriptions / MRR</h3>
@@ -364,7 +372,7 @@
     "phone": "(614) 368-8080",
     "ghlLocationId": "v5thvzGNMNchcQeQQuLI"
   },
-  "updated": "2026-07-09",
+  "updated": "2026-07-14",
   "dataSources": [
     { "name": "GoHighLevel", "status": "connected", "detail": "CRM · Payments · Convos" },
     { "name": "Instagram", "status": "connected", "detail": "@amob_gocrazy" },
@@ -373,11 +381,13 @@
     { "name": "ManyChat", "status": "connected", "detail": "IG DM automation" }
   ],
   "revenue": {
-    "lastMonth": 75670,
+    "lastMonth": 75740,
     "lastMonthLabel": "June 2026",
-    "monthToDate": 12280,
+    "monthToDate": 16030,
     "monthToDateLabel": "July 2026 (MTD)",
     "juneTransactions": 109,
+    "pendingCount": 290,
+    "pendingNote": "~290 pending payments (installment plans via PAB Gateway — $2,625 Strategic Execution Fees, $5K ROC, $3–4.6K Text2Pay — plus some stale 2024 Stripe/test charges).",
     "lifetimeCollected": 121060,
     "lifetimeNote": "invoiced to date (60)",
     "lifetimeLabel": "Invoiced",
@@ -389,19 +399,10 @@
     "invoicesDue": 3497,
     "changeVsPrev": 14.1,
     "monthlySeries": [
-      { "m": "Aug '25", "v": 28400, "verified": false },
-      { "m": "Sep '25", "v": 33100, "verified": false },
-      { "m": "Oct '25", "v": 38900, "verified": false },
-      { "m": "Nov '25", "v": 44600, "verified": false },
-      { "m": "Dec '25", "v": 47200, "verified": false },
-      { "m": "Jan '26", "v": 51500, "verified": false },
-      { "m": "Feb '26", "v": 41200, "verified": false },
-      { "m": "Mar '26", "v": 53800, "verified": false },
-      { "m": "Apr '26", "v": 62400, "verified": false },
-      { "m": "May '26", "v": 68900, "verified": false },
-      { "m": "Jun '26", "v": 75670, "verified": true },
-      { "m": "Jul '26", "v": 12280, "verified": true }
-    ]
+      { "m": "Jun '26", "v": 75740, "verified": true },
+      { "m": "Jul '26 MTD", "v": 16030, "verified": true }
+    ],
+    "monthlySeriesNote": "Only GHL-verified months shown (estimated prior months removed). Full monthly history needs the live API sync."
   },
   "clients": {
     "total": 31254,
@@ -435,25 +436,27 @@
     "totalUnread": 2600,
     "windowedUnread": 486,
     "channels": [
-      { "c": "Instagram DM", "v": 446, "color": "#c98a3c" },
-      { "c": "SMS", "v": 26, "color": "#6ea8fe" },
+      { "c": "Instagram DM", "v": 630, "color": "#c98a3c" },
+      { "c": "SMS", "v": 30, "color": "#6ea8fe" },
       { "c": "Call", "v": 8, "color": "#4a7c59" },
+      { "c": "Facebook DM", "v": 3, "color": "#9b8cff" },
       { "c": "Email", "v": 3, "color": "#d98a34" },
-      { "c": "Facebook DM", "v": 0, "color": "#9b8cff" },
       { "c": "Voicemail", "v": 0, "color": "#c9c2b6" }
     ],
     "slaTracking": false
   },
   "conversations": [
-    { "c": "Instagram", "v": 446 },
-    { "c": "SMS", "v": 26 },
+    { "c": "Instagram", "v": 630 },
+    { "c": "SMS", "v": 30 },
     { "c": "Call", "v": 8 },
+    { "c": "Facebook", "v": 3 },
     { "c": "Email", "v": 3 }
   ],
   "reactivationSegments": [
     { "label": "Ready for funding (hot)", "v": 3, "detail": "Funding Pipeline, final stage — one push from closing.", "sev": "high" },
     { "label": "Waiting to be funded", "v": 39, "detail": "Funding Pipeline: 9 contract sent · 3 signed · 13 awaiting signature · 3 ready.", "sev": "high" },
-    { "label": "Unread Instagram DMs", "v": 446, "detail": "ManyChat backlog — freshest top-of-funnel leads going cold.", "sev": "high" },
+    { "label": "Unread Instagram DMs", "v": 630, "detail": "ManyChat backlog — freshest top-of-funnel leads going cold.", "sev": "high" },
+    { "label": "Pending payments", "v": 290, "detail": "~290 payments pending capture (installment plans + stale Stripe/test) — verify & collect.", "sev": "high" },
     { "label": "Credit-repair leads", "v": 59, "detail": "Credit Repair Pipeline — all still 'New Lead', none worked yet.", "sev": "med" },
     { "label": "New sales leads", "v": 138, "detail": "Sales Pipeline — 136 unworked new leads.", "sev": "med" },
     { "label": "Dormant / unclassified", "v": 27449, "detail": "88% of the base with no lifecycle stage — the biggest re-engagement pool.", "sev": "low" }
@@ -479,11 +482,18 @@
     { "s": "Ready for Funding", "n": 3, "v": 4400 }
   ],
   "packages": [
-    { "name": "Strategic Execution Fee", "price": 2625, "share": 64 },
-    { "name": "Strategic Execution — Premium", "price": 3750, "share": 20 },
-    { "name": "ROC Business Partnership", "price": 2750, "share": 8 },
-    { "name": "Quarter Million Club Mentorship", "price": 2575, "share": 6 },
-    { "name": "Four for Four (ebook funnel)", "price": 4, "share": 2 }
+    { "name": "Strategic Execution Fee ($2K–$5K)", "share": 52 },
+    { "name": "ROC Business Partnership ($5K)", "share": 16 },
+    { "name": "Quarter Million Club Mentorship ($1.5–2.6K)", "share": 12 },
+    { "name": "Text2Pay custom invoices ($1–4.6K)", "share": 12 },
+    { "name": "The Funding Foundation ($29)", "share": 5 },
+    { "name": "Four for Four Funnel ($4)", "share": 3 }
+  ],
+  "packagesNote": "Real products & prices from PAB Gateway transactions. Share % is approximate by revenue (exact split needs full transaction sync).",
+  "conversionFunnel": [
+    { "stage": "Leads (30d)", "v": 977 },
+    { "stage": "Appointments booked", "v": 11 },
+    { "stage": "Opportunities won", "v": 1 }
   ],
   "subscriptions": {
     "note": "Recurring products exist but most subscriptions are Incomplete/Expired — minimal active MRR.",
@@ -581,8 +591,8 @@ function render(d){
     ["MTD · Jul", fmtK(r.monthToDate), ""],
     [r.lifetimeLabel||"Invoiced", fmtK(life), r.lifetimeNote||""],
     ["Overdue", fmtK(r.invoicesOverdue), r.invoicesOverdueCount+" invoices"],
+    ["Pending pmts", num(r.pendingCount), "to capture"],
     ["Leads (30d)", num(d.clients.leads30d), d.clients.leadsWeek+"/wk"],
-    ["Contacts", kk(d.clients.total), "+"+d.clients.newThisMonth+" mo"],
     ["IG followers", kk(d.social.followers), d.social.posts+" posts"],
     ["Pipelines", d.pipelinesSummary.total, "funnels"]
   ];
@@ -637,6 +647,13 @@ function render(d){
   document.getElementById("pl-active").innerHTML = ps.active.map(a=>
     `<div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid var(--line)"><span>${a.name}</span><b>${a.opps} opps</b></div><div class="note" style="margin:0 0 6px">${a.note}</div>`).join("");
   document.getElementById("pl-ex").textContent = ps.examples.slice(0,5).join(" · ");
+  const cf = d.conversionFunnel||[];
+  const cfmax = cf.length ? cf[0].v : 1;
+  document.getElementById("funnel").innerHTML = cf.map((f,i)=>{
+    const pct = i>0 ? " · "+(f.v/cf[0].v*100).toFixed(f.v/cf[0].v<0.02?1:0)+"% of leads" : "";
+    return `<div class="stage"><span class="nm">${f.stage}</span><span class="bar" style="width:${Math.max(6,f.v/cfmax*130)}px"></span><span class="ct">${num(f.v)}${pct}</span></div>`;
+  }).join("");
+  document.getElementById("funnel-note").textContent = "Booking rate (leads→appointments) and close rate are the biggest leverage points — huge lead volume, thin conversion.";
 
   // conversations
   charts.convChart = new Chart(document.getElementById("convChart"),{type:"doughnut",
@@ -654,9 +671,13 @@ function render(d){
   document.getElementById("em-click").textContent=em.clickPct+"%"; document.getElementById("em-sent").textContent="~"+em.sent;
 
   // payments
-  document.getElementById("k-life2").textContent=fmt(life);
-  document.getElementById("k-recv").textContent=fmt(r.invoicesReceived||0)+" · "+r.invoicesReceivedCount;
-  document.getElementById("k-over2").textContent=fmt(r.invoicesOverdue);
+  document.getElementById("k-jun").textContent=fmtK(r.lastMonth);
+  document.getElementById("k-mtd2").textContent=fmtK(r.monthToDate);
+  document.getElementById("k-life2").textContent=fmtK(life);
+  document.getElementById("k-recv").textContent=r.invoicesReceivedCount+" invoices";
+  document.getElementById("k-over2").textContent=fmtK(r.invoicesOverdue);
+  document.getElementById("k-pend").textContent=num(r.pendingCount);
+  document.getElementById("pend-note").textContent=r.pendingNote||"";
   document.getElementById("sub-note").textContent=d.subscriptions.note;
   document.getElementById("sub-prod").innerHTML=d.subscriptions.products.map(p=>`<span class="tag">${p}</span>`).join("")+"<div class='note'>Gateways: "+d.subscriptions.gateways.join(", ")+"</div>";
   const at=d.attribution;
